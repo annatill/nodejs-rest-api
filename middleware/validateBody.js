@@ -1,12 +1,10 @@
-const { addSchema } = require("../models/contact");
+const { newError } = require("../helpers");
 
-const validateBody = (req, res, next) => {
-  const { error } = addSchema.validate(req.body);
+const validateBody = (schema) => (req, res, next) => {
+  const { error } = schema.validate(req.body);
   if (error) {
     const errorMessage = error.details[0].message;
-    return res.status(400).json({
-      message: errorMessage,
-    });
+    next(newError(400, errorMessage));
   }
   return next();
 };
