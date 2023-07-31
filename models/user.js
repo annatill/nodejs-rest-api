@@ -22,11 +22,19 @@ const userSchema = new Schema(
     },
     token: {
       type: String,
-      default: null,
+      default: "",
     },
     avatarURL: {
       type: String,
       required: true,
+    },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+      required: [true, "Verify token is required"],
     },
   },
   { versionKey: false, timestamps: true }
@@ -61,6 +69,23 @@ const updateSubscriptionSchema = Joi.object({
     }),
 });
 
+const mailSchema = Joi.object({
+  email: Joi.string()
+    .email()
+    .pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
+    .required()
+    .messages({
+      "string.email": "Please enter a valid email address",
+      "string.empty": 'The "email" field must not be empty',
+      "any.required": "Missing required email field",
+    }),
+});
+
 const User = model("user", userSchema);
 
-module.exports = { User, userValidateSchema, updateSubscriptionSchema };
+module.exports = {
+  User,
+  userValidateSchema,
+  updateSubscriptionSchema,
+  mailSchema,
+};
