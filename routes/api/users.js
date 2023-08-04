@@ -4,10 +4,15 @@ const { validateBody, authenticate, upload } = require("../../middleware");
 const {
   userValidateSchema,
   updateSubscriptionSchema,
+  mailSchema,
 } = require("../../models/user");
 const ctrls = require("../../controllers/users");
 
 router.get("/current", authenticate, ctrls.current);
+
+router.get("/verify/:verificationToken", ctrls.verify);
+
+router.post("/verify", validateBody(mailSchema), ctrls.repeatEmailVerification);
 
 router.post("/register", validateBody(userValidateSchema), ctrls.register);
 
